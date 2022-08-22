@@ -1,14 +1,9 @@
-import type {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
-import { PrismaClient } from "@prisma/client";
-import { FormEvent, useState } from "react";
+import type { NextPage } from "next";
+import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
+import Header from "../components/header";
 
-const Home: NextPage<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ id }) => {
+const Home: NextPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -33,53 +28,63 @@ const Home: NextPage<
     }
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("has_visited_before") !== null) return;
+
+    const handle_visit = async () =>
+      await fetch("/api/add_to_counter", { method: "POST" });
+
+    localStorage.setItem("has_visited_before", "true");
+    handle_visit();
+  });
+
   return (
-    <fieldset>
-      <h1>Olá visitante de numero {id}</h1>
-      <form
-        onSubmit={handle_submit}
-        className="flex flex-col text-zinc-100 items-center p-4"
-      >
-        <label className="mb-4">
-          Nome
-          <input
-            onChange={(e) => setName(e.target.value)}
-            className="text-zinc-900 rounded border p-2 ml-4"
-            placeholder="John Doe"
-            type="text"
-          />
-        </label>
-        <label className="mb-4">
-          Email
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            className="text-zinc-900 rounded border p-2 ml-4"
-            placeholder="johndoe@mail.com"
-            type="email"
-          />
-        </label>
-        <button
-          className="bg-purple-700 px-4 py-2 rounded border hover:bg-purple-800 transition-all active:bg-purple-900"
-          type="submit"
-        >
-          Enviar
-        </button>
-        <span className="mt-4">{message}</span>
-      </form>
-    </fieldset>
+    <>
+      <Header />
+      <main>
+        <section className="p-4">
+          <p className="indent-2">
+            Olá!! Tudo bem? Somos estudantes do curso técnico de informática do
+            Colégio Luterano Concórdia - SL, estamos iniciando nossa pesquisa de
+            validação do problema do nosso TCC, ao clicar no link dos stories,
+            você já participou da nossa pesquisa! Muito obrigada, caso queira
+            ficar por dentro das atualizações no nosso projeto, inscreva-se:{" "}
+          </p>
+        </section>
+        <fieldset className="text-center p-12">
+          <form onSubmit={handle_submit} className="flex flex-col p-4">
+            <label htmlFor="name" className="mt-4 mb-2">
+              Nome
+            </label>
+            <input
+              id="name"
+              onChange={(e) => setName(e.target.value)}
+              className="text-zinc-900 rounded border p-2 mx-auto"
+              placeholder="John Doe"
+              type="text"
+            />
+            <label htmlFor="email" className="mt-4 mb-2">
+              Email
+            </label>
+            <input
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+              className="text-zinc-900 rounded border p-2 mx-auto"
+              placeholder="johndoe@mail.com"
+              type="email"
+            />
+            <button
+              className="bg-brand-dark4 mt-4 mx-auto px-6 py-2 rounded border hover:bg-brand-dark3 transition-all active:bg-brand-dark2"
+              type="submit"
+            >
+              Enviar
+            </button>
+            <span className="mt-4">{message}</span>
+          </form>
+        </fieldset>
+      </main>
+    </>
   );
 };
 
 export default Home;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const client = new PrismaClient();
-  const { id } = await client.counter.create({
-    data: {},
-  });
-  return {
-    props: {
-      id,
-    },
-  };
-};

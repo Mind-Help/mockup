@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { NextApiResponse, NextApiRequest } from "next";
+import type { NextApiResponse, NextApiRequest } from "next";
 
-const client = new PrismaClient();
+import client from "../../lib/prisma";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
