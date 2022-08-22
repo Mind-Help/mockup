@@ -1,8 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
-export default () => (
+const Header: React.FC = () => (
   <header className="bg-brand-dark2 flex py-4 justify-around items-center">
-    <img src="/logo.svg" alt="our logo" />
+    <Image width={50} height={50} src="/logo.svg" alt="our logo" />
     <nav>
       <ul className="flex gap-12">
         <Link href="/">
@@ -24,3 +25,5 @@ export default () => (
     </nav>
   </header>
 );
+
+export default Header;
