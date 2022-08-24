@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
 import Header from "../components/header";
 
 const Home: NextPage = () => {
@@ -10,6 +9,14 @@ const Home: NextPage = () => {
 
   const handle_submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (name === "") {
+      setMessage("nome não é válido");
+      return;
+    }
+    if (email === "") {
+      setMessage("email não é válido");
+      return;
+    }
     const res = await fetch("/api/create_user", {
       method: "POST",
       body: new URLSearchParams({ name, email }),
